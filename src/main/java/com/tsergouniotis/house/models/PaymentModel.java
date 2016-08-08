@@ -48,7 +48,11 @@ public class PaymentModel implements Serializable {
 		return selectedPayment;
 	}
 
-	public void save() {		
+	public Double getTotal() {
+		return paymentRepository.findSum();
+	}
+
+	public void save() {
 		paymentRepository.update(selectedPayment);
 		selectedPayment = null;
 
