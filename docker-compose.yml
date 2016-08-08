@@ -1,0 +1,32 @@
+version: '2'
+services:
+  postgres:
+    container_name: opap_db
+    image: postgres:9.4
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_USER=house
+    - POSTGRES_PASSWORD=house
+    volumes:
+    - ${HOME}/projects/data/house/pgdata:/var/lib/postgresql/data
+    networks:
+    - house_net
+  joker:
+    container_name: house
+    image: thanassis/house
+    ports:
+    - 8080:8080
+    - 9000:9000
+    environment:
+    - HOUSE_DB_HOST=postgres
+    - HOUSE_DB_PORT=5432
+    depends_on:
+    - postgres
+    env_file:
+    - dev.env
+    networks:
+    - house_net
+networks:
+  house_net:
+    driver: bridge
