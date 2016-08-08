@@ -1,51 +1,91 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-<body>
+	<body>
 
-	<ui:composition template="./WEB-INF/template.xhtml">
-
-		<ui:define name="content">
-
-			<h:form>
-				<p:growl id="growl" life="2000" />
-
-				<p:inputText value="#{paymentModel.newPayment.description}" />
-
-				<p:commandButton value="Non-Ajax Submit" id="nonAjax"
-					actionListener="#{paymentModel.savePayment}" ajax="false" />
-
-				<p:commandButton value="Disabled" id="disabled" disabled="true" />
-			</h:form>
+		<ui:composition template="./WEB-INF/template.xhtml">
 
 
+			<ui:define name="top">
+				<p:link id="_link" outcome="creditors" value="creditors" />
+			</ui:define>
 
-			<p:dataTable var="payment" value="#{paymentModel.payments}"
-				editable="true">
-				<p:column headerText="Id">
-					<h:outputText value="#{payment.id}" />
-				</p:column>
+			<ui:define name="content">
 
-				<p:column headerText="Amount">
-					<h:outputText value="#{payment.amount}" />
-				</p:column>
+				<h:form id="master">
+					<p:dataTable var="payment" value="#{paymentModel.payments}"
+						editable="true">
+						<p:column headerText="Id">
+							<h:outputText value="#{payment.id}" />
+						</p:column>
 
-				<p:column headerText="Day">
-					<h:outputText value="#{payment.paymentDay}">
-						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="GMT+3" />
-					</h:outputText>
-				</p:column>
+						<p:column headerText="Amount">
+							<h:outputText value="#{payment.amount}" />
+						</p:column>
 
-			</p:dataTable>
+						<p:column headerText="Day">
+							<h:outputText value="#{payment.paymentDay}">
+								<f:convertDateTime pattern="yyyy-mm-dd" />
+								<f:converter converterId="localDateTimeConverter" />
+							</h:outputText>
+						</p:column>
 
-		</ui:define>
+						<p:column>
+							<p:commandButton value="View"
+								action="#{paymentModel.setSelectedPayment(payment)}" update=":detail"
+								oncomplete="PF('detail').show()" />
+						</p:column>
 
-	</ui:composition>
+					</p:dataTable>
 
-</body>
+					<p:commandButton value="Add" update=":detail"
+						oncomplete="PF('detail').show()" />
+
+				</h:form>
+
+				<p:dialog id="detail" widgetVar="detail">
+					<h:form>
+
+						<h:panelGrid columns="2">
+
+							<p:outputLabel for="description" value="Description:" />
+							<p:inputText id="description"
+								value="#{paymentModel.selectedPayment.description}" />
+
+							<p:outputLabel for="amount" value="Amount:" />
+							<p:inputText id="amount"
+								value="#{paymentModel.selectedPayment.amount}" />
+
+							<p:outputLabel for="creditor" value="Creditor:" />
+							<p:selectOneMenu id="creditor" converter="#{creditorConverter}"
+								value="#{paymentModel.selectedPayment.creditor}" filter="true"
+								filterMatchMode="startsWith" effect="fade">
+								<f:selectItems value="#{creditorModel.creditors}"
+									var="c" itemLabel="#{c.name}" itemValue="#{c}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="inline" value="Payment Date:" />
+							<p:calendar id="inline" pattern="yyyy-mm-dd"
+								value="#{paymentModel.selectedPayment.paymentDay}" showOn="button">
+								<f:converter converterId="localDateTimeConverter" />
+							</p:calendar>
+
+						</h:panelGrid>
+
+
+						<p:button value="Close" onclick="PF('detail').hide(); return false" />
+						<p:commandButton value="Save" action="#{paymentModel.save}"
+							update=":master" oncomplete="PF('detail').hide()" />
+					</h:form>
+				</p:dialog>
+
+
+			</ui:define>
+
+		</ui:composition>
+
+	</body>
 </html>

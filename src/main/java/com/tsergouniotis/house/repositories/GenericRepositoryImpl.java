@@ -14,7 +14,7 @@ public abstract class GenericRepositoryImpl<T, PK extends Serializable> implemen
 
 	protected Class<T> entityClass;
 
-	@PersistenceContext(name = "house")
+	@PersistenceContext
 	protected EntityManager em;
 
 	public GenericRepositoryImpl(Class<T> type) {

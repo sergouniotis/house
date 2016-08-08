@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<body>
+
+		<ui:composition template="./WEB-INF/template.xhtml">
+
+
+			<ui:define name="top">
+				<p:link outcome="index" value="payments"/>
+			</ui:define>
+
+			<ui:define name="content">
+
+				<h:form id="master">
+					<p:dataTable var="creditor" value="#{creditorModel.creditors}"
+						editable="true">
+						<p:column headerText="Id">
+							<h:outputText value="#{creditor.id}" />
+						</p:column>
+
+						<p:column headerText="Name">
+							<h:outputText value="#{creditor.name}" />
+						</p:column>
+
+						<p:column headerText="Description">
+							<h:outputText value="#{creditor.description}" />
+						</p:column>
+
+						<p:column>
+							<p:commandButton value="View"
+								action="#{creditorModel.setSelectedCreditor(creditor)}" update=":detail"
+								oncomplete="PF('detail').show()" />
+						</p:column>
+
+					</p:dataTable>
+
+					<p:commandButton value="Add" update=":detail"
+						oncomplete="PF('detail').show()" />
+
+				</h:form>
+
+				<p:dialog id="detail" widgetVar="detail">
+					<h:form>
+						<!-- <p:inputText value="#{paymentModel.selectedPayment.id}" /> -->
+						<p:inputText value="#{creditorModel.selectedCreditor.name}" />
+						<p:inputText value="#{creditorModel.selectedCreditor.description}" />
+
+						<p:button value="Close" onclick="PF('detail').hide(); return false" />
+						<p:commandButton value="Save" action="#{creditorModel.save}"
+							update=":master" oncomplete="PF('detail').hide()" />
+					</h:form>
+				</p:dialog>
+
+
+			</ui:define>
+
+		</ui:composition>
+
+	</body>
+</html>

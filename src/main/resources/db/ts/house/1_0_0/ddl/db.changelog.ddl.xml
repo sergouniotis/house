@@ -4,6 +4,28 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+
+
+	<changeSet id="create_creditors_table" author="t.sergouniotis">
+
+		<createTable tableName="creditors">
+
+			<column name="database_id" type="BIGINT" />
+
+			<column name="creditor_name" type="TEXT" />
+
+			<column name="description" type="TEXT" />
+
+		</createTable>
+
+		<addPrimaryKey tableName="creditors" columnNames="database_id"
+			constraintName="creditors_pk" />
+
+		<createSequence sequenceName="creditor_seq"
+			incrementBy="1" startValue="1" />
+
+	</changeSet>
+
 	<changeSet id="create_payment_table" author="t.sergouniotis">
 
 		<createTable tableName="payments">
@@ -11,17 +33,25 @@
 
 			<column name="amount" type="DOUBLE" />
 
+			<column name="creditor_sid" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+
 			<column name="payment_day" type="DATE" />
-			
+
 			<column name="description" type="TEXT" />
 
 		</createTable>
 
 		<addPrimaryKey tableName="payments" columnNames="database_id"
-			constraintName="payment_pk" />
+			constraintName="payments_pk" />
 
 		<createSequence sequenceName="payment_seq" incrementBy="1"
 			startValue="1" />
+
+		<addForeignKeyConstraint constraintName="payment_creditor_fk"
+			referencedTableName="creditors" baseColumnNames="creditor_sid"
+			baseTableName="payments" referencedColumnNames="database_id" />
 
 	</changeSet>
 
