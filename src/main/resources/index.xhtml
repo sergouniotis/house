@@ -16,8 +16,8 @@
 			<ui:define name="content">
 
 				<h:form id="master">
-					<p:dataTable var="payment" value="#{paymentModel.payments}"
-						rows="20" paginator="true"
+					<p:dataTable id="paymentsDataTable" var="payment"
+						value="#{paymentModel.payments}" rows="20" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15" editable="true" sortBy="#{payment.creditor.name}">
 
@@ -45,7 +45,7 @@
 							</h:outputText>
 						</p:column>
 
-						<p:column>
+						<p:column exportable="false">
 							<p:commandButton title="View" icon="ui-icon-search"
 								action="#{paymentModel.setSelectedPayment(payment)}" update=":detail"
 								oncomplete="PF('detail').show()" />
@@ -81,11 +81,17 @@
 					<p:commandButton value="Add" update=":detail"
 						oncomplete="PF('detail').show()" />
 
+					<h:commandLink>
+						<p:graphicImage name="images/excel.png" />
+						<p:dataExporter type="xls" target="paymentsDataTable"
+							fileName="payments" pageOnly="true" />
+					</h:commandLink>
+
 				</h:form>
 
 				<p:dialog modal="true" widgetVar="statusDialog" header="Status"
 					draggable="false" closable="false" resizable="false">
-					<p:graphicImage value="images/ajaxloadingbar.gif" />
+					<p:graphicImage name="images/ajaxloadingbar.gif" />
 				</p:dialog>
 
 				<script type="text/javascript">
@@ -122,14 +128,16 @@
 							<p:outputLabel for="file" value="File: " />
 							<p:panel id="file">
 								<p:fileUpload fileUploadListener="#{paymentModel.handleFileUpload}"
-									dragDropSupport="true" mode="advanced" update="messages uploadedFiles" auto="true"
-									sizeLimit="100000" />
+									dragDropSupport="true" mode="advanced" update="messages uploadedFiles"
+									auto="true" sizeLimit="100000" />
 								<p:growl id="messages" showDetail="true" />
-								
-								<p:outputPanel id="uploadedFiles" deferred="false" deferredMode="load">
+
+								<p:outputPanel id="uploadedFiles" deferred="false"
+									deferredMode="load">
 									<h3>Files</h3>
 									<p>
-										<h:outputText value="#{paymentModel.selectedPayment.file.fileName}" rendered="#{not empty paymentModel.selectedPayment.file}"/>
+										<h:outputText value="#{paymentModel.selectedPayment.file.fileName}"
+											rendered="#{not empty paymentModel.selectedPayment.file}" />
 									</p>
 								</p:outputPanel>
 							</p:panel>

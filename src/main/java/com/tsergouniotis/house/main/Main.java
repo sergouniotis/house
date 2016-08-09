@@ -62,14 +62,18 @@ public class Main {
 
 		deployment.addDependency("org.liquibase:liquibase-core");
 		deployment.addDependency("org.primefaces:primefaces");
+		deployment.addDependency("org.apache.poi:poi");
 
 		deployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()),
 				"classes/META-INF/persistence.xml");
 
 		deployment.addAsWebResource(new ClassLoaderAsset("index.html", Main.class.getClassLoader()), "index.html");
 		deployment.addAsWebResource(new ClassLoaderAsset("index.xhtml", Main.class.getClassLoader()), "index.xhtml");
-		deployment.addAsWebResource(new ClassLoaderAsset("creditors.xhtml", Main.class.getClassLoader()), "creditors.xhtml");
-		deployment.addAsResource(new ClassLoaderAsset("images", Main.class.getClassLoader()), "images");
+		deployment.addAsWebResource(new ClassLoaderAsset("creditors.xhtml", Main.class.getClassLoader()),
+				"creditors.xhtml");
+//		deployment.addAsResource("images", "resources/images");
+		deployment.addAsResource("images", "META-INF/resources/images");
+//		deployment.addAsResource("images", "META-INF/images");
 
 		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/web.xml", Main.class.getClassLoader()), "web.xml");
 		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/template.xhtml", Main.class.getClassLoader()),
