@@ -17,6 +17,11 @@ import javax.persistence.Table;
 @NamedQueries({ @NamedQuery(name = "Creditor.findByName", query = "SELECT c FROM Creditor c where c.name=:name") })
 public class Creditor implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "database_id")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CREDITORSEQ")

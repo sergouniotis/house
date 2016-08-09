@@ -10,7 +10,7 @@
 
 
 			<ui:define name="top">
-				<p:link outcome="index" value="payments"/>
+				<p:link outcome="index" value="payments" />
 			</ui:define>
 
 			<ui:define name="content">
@@ -45,13 +45,22 @@
 
 				<p:dialog id="detail" widgetVar="detail">
 					<h:form>
-						<!-- <p:inputText value="#{paymentModel.selectedPayment.id}" /> -->
-						<p:inputText value="#{creditorModel.selectedCreditor.name}" />
-						<p:inputText value="#{creditorModel.selectedCreditor.description}" />
 
-						<p:button value="Close" onclick="PF('detail').hide(); return false" />
+						<h:panelGrid columns="2">
+							<p:outputLabel for="CreditorName" value="Name:" />
+							<p:inputText id="CreditorName"
+								value="#{creditorModel.selectedCreditor.name}" />
+
+							<p:outputLabel for="CreditorDescription" value="Description:" />
+							<p:inputText id="CreditorDescription"
+								value="#{creditorModel.selectedCreditor.description}" />
+
+						</h:panelGrid>
+
 						<p:commandButton value="Save" action="#{creditorModel.save}"
 							update=":master" oncomplete="PF('detail').hide()" />
+						<p:button value="Close" onclick="PF('detail').hide(); return false" />
+
 					</h:form>
 				</p:dialog>
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,8 +18,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "payments")
-@NamedQueries({ @NamedQuery(name = "Payment.findSum", query = "SELECT SUM(p.amount) FROM Payment p") })
+@NamedQueries({ @NamedQuery(name = "Payment.findSum", query = "SELECT SUM(p.amount) FROM Payment p"),
+		@NamedQuery(name = "Payment.findSumPerCreditor", query = "SELECT SUM(p.amount) FROM Payment p where p.creditor=:creditor") })
 public class Payment implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "database_id")
@@ -38,6 +45,9 @@ public class Payment implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "creditor_sid", referencedColumnName = "database_id")
 	private Creditor creditor;
+
+	@Embedded
+	private PFile file;
 
 	public Long getId() {
 		return id;
@@ -73,6 +83,14 @@ public class Payment implements Serializable {
 
 	public void setCreditor(Creditor creditor) {
 		this.creditor = creditor;
+	}
+
+	public PFile getFile() {
+		return file;
+	}
+
+	public void setFile(PFile file) {
+		this.file = file;
 	}
 
 }

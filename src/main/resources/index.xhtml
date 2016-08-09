@@ -17,16 +17,28 @@
 
 				<h:form id="master">
 					<p:dataTable var="payment" value="#{paymentModel.payments}"
-						editable="true">
-						<p:column headerText="Id">
-							<h:outputText value="#{payment.id}" />
+						rows="20" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" editable="true" sortBy="#{payment.creditor.name}">
+
+						<f:facet name="header">
+							<h:outputText value="Payments" />
+						</f:facet>
+
+						<p:column headerText="Creditor" sortBy="#{payment.creditor.name}"
+							filterBy="#{payment.creditor.name}">
+							<h:outputText value="#{payment.creditor.name}" />
 						</p:column>
 
-						<p:column headerText="Amount">
+						<p:column headerText="Amount" sortBy="#{payment.amount}">
 							<h:outputText value="#{payment.amount}" />
 						</p:column>
 
-						<p:column headerText="Day">
+						<p:column headerText="Description" filterBy="#{payment.description}">
+							<h:outputText value="#{payment.description}" />
+						</p:column>
+
+						<p:column headerText="Day" sortBy="#{payment.paymentDay}">
 							<h:outputText value="#{payment.paymentDay}">
 								<f:convertDateTime pattern="yyyy-mm-dd" />
 								<f:converter converterId="localDateTimeConverter" />
@@ -34,21 +46,35 @@
 						</p:column>
 
 						<p:column>
-							<p:commandButton value="View"
+							<p:commandButton title="View" icon="ui-icon-search"
 								action="#{paymentModel.setSelectedPayment(payment)}" update=":detail"
 								oncomplete="PF('detail').show()" />
+
+							<p:commandButton value="Download" ajax="false"
+								rendered="#{not empty payment.file}" onclick="PrimeFaces.monitorDownload(start, stop);"
+								icon="ui-icon-arrowthick-1-s">
+								<p:fileDownload
+									value="#{paymentModel.getSelectedPaymentContent(payment)}" />
+							</p:commandButton>
+
 						</p:column>
 
 						<p:summaryRow>
-							<p:column colspan="3" style="text-align:right">
+							<p:column colspan="1" style="text-align:right">
 								<h:outputText value="Total:" />
 							</p:column>
-							<p:column>
-								<h:outputText value="#{paymentModel.total}">
-									<f:convertNumber type="currency" currencySymbol="$" />
+							<p:column colspan="4" style="text-align:left">
+								<h:outputText
+									value="#{paymentModel.getTotalPerCreditor(payment.creditor)}">
+									<f:convertNumber type="currency"
+										currencySymbol="€" />
 								</h:outputText>
 							</p:column>
 						</p:summaryRow>
+
+						<f:facet name="footer">
+							<h:outputText value="Current Cost in €: #{paymentModel.total}" />
+						</f:facet>
 
 					</p:dataTable>
 
@@ -57,18 +83,25 @@
 
 				</h:form>
 
+				<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+					draggable="false" closable="false" resizable="false">
+					<p:graphicImage value="images/ajaxloadingbar.gif" />
+				</p:dialog>
+
+				<script type="text/javascript">
+					function start() {
+					PF('statusDialog').show();
+					}
+
+					function stop() {
+					PF('statusDialog').hide();
+					}
+				</script>
+
 				<p:dialog id="detail" widgetVar="detail">
 					<h:form>
 
 						<h:panelGrid columns="2">
-
-							<p:outputLabel for="description" value="Description:" />
-							<p:inputText id="description"
-								value="#{paymentModel.selectedPayment.description}" />
-
-							<p:outputLabel for="amount" value="Amount:" />
-							<p:inputText id="amount"
-								value="#{paymentModel.selectedPayment.amount}" />
 
 							<p:outputLabel for="creditor" value="Creditor:" />
 							<p:selectOneMenu id="creditor" converter="#{creditorConverter}"
@@ -77,6 +110,29 @@
 								<f:selectItems value="#{creditorModel.creditors}"
 									var="c" itemLabel="#{c.name}" itemValue="#{c}" />
 							</p:selectOneMenu>
+
+							<p:outputLabel for="amount" value="Amount:" />
+							<p:inputText id="amount"
+								value="#{paymentModel.selectedPayment.amount}" />
+
+							<p:outputLabel for="description" value="Description:" />
+							<p:inputText id="description"
+								value="#{paymentModel.selectedPayment.description}" />
+
+							<p:outputLabel for="file" value="File: " />
+							<p:panel id="file">
+								<p:fileUpload fileUploadListener="#{paymentModel.handleFileUpload}"
+									dragDropSupport="true" mode="advanced" update="messages uploadedFiles" auto="true"
+									sizeLimit="100000" />
+								<p:growl id="messages" showDetail="true" />
+								
+								<p:outputPanel id="uploadedFiles" deferred="false" deferredMode="load">
+									<h3>Files</h3>
+									<p>
+										<h:outputText value="#{paymentModel.selectedPayment.file.fileName}" rendered="#{not empty paymentModel.selectedPayment.file}"/>
+									</p>
+								</p:outputPanel>
+							</p:panel>
 
 							<p:outputLabel for="inline" value="Payment Date:" />
 							<p:calendar id="inline" pattern="yyyy-mm-dd"
@@ -87,9 +143,9 @@
 						</h:panelGrid>
 
 
-						<p:button value="Close" onclick="PF('detail').hide(); return false" />
 						<p:commandButton value="Save" action="#{paymentModel.save}"
 							update=":master" oncomplete="PF('detail').hide()" />
+						<p:button value="Close" onclick="PF('detail').hide(); return false" />
 					</h:form>
 				</p:dialog>
 

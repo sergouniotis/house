@@ -41,6 +41,12 @@
 
 			<column name="description" type="TEXT" />
 
+			<column name="file_name" type="TEXT" />
+
+			<column name="file_content" type="BLOB" />
+
+			<column name="file_content_type" type="TEXT" />
+
 		</createTable>
 
 		<addPrimaryKey tableName="payments" columnNames="database_id"

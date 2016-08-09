@@ -41,7 +41,7 @@ public class CreditorModel implements Serializable {
 	}
 
 	public void save() {
-		creditorRepository.save(selectedCreditor);
+		creditorRepository.update(selectedCreditor);
 		this.selectedCreditor = null;
 	}
 
