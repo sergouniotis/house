@@ -1,7 +1,7 @@
 version: '2'
 services:
   postgres:
-    container_name: opap_db
+    container_name: house_db
     image: postgres:9.4
     ports:
     - 5432:5432
@@ -19,7 +19,7 @@ services:
     - 8080:8080
     - 9000:9000
     environment:
-    - HOUSE_DB_HOST=postgres
+    - HOUSE_DB_HOST=house_db
     - HOUSE_DB_PORT=5432
     depends_on:
     - postgres

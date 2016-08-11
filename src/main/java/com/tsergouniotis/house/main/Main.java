@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
+import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
@@ -71,9 +72,16 @@ public class Main {
 		deployment.addAsWebResource(new ClassLoaderAsset("index.xhtml", Main.class.getClassLoader()), "index.xhtml");
 		deployment.addAsWebResource(new ClassLoaderAsset("creditors.xhtml", Main.class.getClassLoader()),
 				"creditors.xhtml");
-//		deployment.addAsResource("images", "resources/images");
-		deployment.addAsResource("images", "META-INF/resources/images");
-//		deployment.addAsResource("images", "META-INF/images");
+
+		
+//		deployment.addAsResource(new ClassLoaderAsset("images/ajaxloadingbar.gif", Main.class.getClassLoader()), "META-INF/resources/images/ajaxloadingbar.gif");
+		deployment.addAsManifestResource(new ClassLoaderAsset("images/ajaxloadingbar.gif", Main.class.getClassLoader()), "resources/images/ajaxloadingbar.gif");
+		
+//		deployment.addAsResource(new ClassLoaderAsset("images/excel.png", Main.class.getClassLoader()), "META-INF/resources/images/excel.png");
+		deployment.addAsManifestResource(new ClassLoaderAsset("images/excel.png", Main.class.getClassLoader()), "resources/images/excel.png");
+		
+		//the line below is performing via mvn wildfly:run. Running as fat-jar will fail.
+//		deployment.addAsResource("images", "META-INF/resources/images");
 
 		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/web.xml", Main.class.getClassLoader()), "web.xml");
 		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/template.xhtml", Main.class.getClassLoader()),
