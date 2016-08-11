@@ -1,6 +1,7 @@
 package com.tsergouniotis.house.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "payments")
 @NamedQueries({ @NamedQuery(name = "Payment.findSum", query = "SELECT SUM(p.amount) FROM Payment p"),
+		@NamedQuery(name = "Payment.findPerCreditor", query = "SELECT p FROM Payment p where p.creditor=:creditor"),
 		@NamedQuery(name = "Payment.findSumPerCreditor", query = "SELECT SUM(p.amount) FROM Payment p where p.creditor=:creditor") })
 public class Payment implements Serializable {
 
@@ -37,7 +39,7 @@ public class Payment implements Serializable {
 	private String description;
 
 	@Column(name = "amount")
-	private Double amount;
+	private BigDecimal amount;
 
 	@Column(name = "payment_day")
 	private LocalDate paymentDay;
@@ -46,6 +48,12 @@ public class Payment implements Serializable {
 	@JoinColumn(name = "creditor_sid", referencedColumnName = "database_id")
 	private Creditor creditor;
 
+	@Column(name = "is_extra")
+	private boolean extra;
+
+	@Column(name = "payment_code", unique = true)
+	private String code;
+
 	@Embedded
 	private PFile file;
 
@@ -53,11 +61,11 @@ public class Payment implements Serializable {
 		return id;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -91,6 +99,22 @@ public class Payment implements Serializable {
 
 	public void setFile(PFile file) {
 		this.file = file;
+	}
+
+	public boolean isExtra() {
+		return extra;
+	}
+
+	public void setExtra(boolean extra) {
+		this.extra = extra;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

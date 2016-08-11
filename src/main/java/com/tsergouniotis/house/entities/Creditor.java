@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,11 +35,15 @@ public class Creditor implements Serializable {
 	@Column(name = "description")
 	private String description;
 
+	@Enumerated
+	@Column(name = "creditor_type")
+	private CreditorType type;
+
 	/**
 	 * JPA Constructor
 	 */
 	public Creditor() {
-
+		this.type = CreditorType.WORKER;
 	}
 
 	public Creditor(String name) {
@@ -64,6 +69,14 @@ public class Creditor implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public CreditorType getType() {
+		return type;
+	}
+
+	public void setType(CreditorType type) {
+		this.type = type;
 	}
 
 	@Override

@@ -16,6 +16,8 @@
 
 			<column name="description" type="TEXT" />
 
+			<column name="creditor_type" type="TEXT" />
+
 		</createTable>
 
 		<addPrimaryKey tableName="creditors" columnNames="database_id"
@@ -35,6 +37,14 @@
 
 			<column name="creditor_sid" type="BIGINT">
 				<constraints nullable="false" />
+			</column>
+
+			<column name="is_extra" type="BOOLEAN">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="payment_code" type="TEXT">
+				<constraints unique="true" />
 			</column>
 
 			<column name="payment_day" type="DATE" />

@@ -60,7 +60,7 @@
 				<version>${version.wildfly.swarm}</version>
 				<configuration>
 					<mainClass>com.tsergouniotis.house.main.Main</mainClass>
-					<!-- <debug>9000</debug> -->
+					<debug>9000</debug>
 					<fractions>
 						<fraction>jsf</fraction>
 					</fractions>

@@ -3,6 +3,7 @@ package com.tsergouniotis.house.models;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,22 +14,25 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
+
 import com.tsergouniotis.house.entities.Creditor;
 import com.tsergouniotis.house.entities.PFile;
 import com.tsergouniotis.house.entities.Payment;
-import com.tsergouniotis.house.repositories.CreditorRepository;
 import com.tsergouniotis.house.repositories.PaymentRepository;
-
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
-
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 @ViewScoped
 @Named("paymentModel")
 // @ManagedBean(name = "paymentModel")
 public class PaymentModel implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5209787022951181350L;
 
 	@Inject
 	private PaymentRepository paymentRepository;
@@ -54,18 +58,25 @@ public class PaymentModel implements Serializable {
 		return selectedPayment;
 	}
 
-	public Double getTotal() {
+	public BigDecimal getTotal() {
 		return paymentRepository.findSum();
 	}
 
-	public Double getTotalPerCreditor(Creditor creditor) {
+	public BigDecimal getTotalPerCreditor(Creditor creditor) {
 		return paymentRepository.findSumPerCreditor(creditor);
 	}
 
 	public void save() {
-		paymentRepository.update(selectedPayment);
+		paymentRepository.saveOrUpdate(selectedPayment);
 		selectedPayment = null;
+	}
 
+	public void delete() {
+		try {
+			paymentRepository.delete(this.selectedPayment);
+		} catch (Exception e) {
+			FacesUtils.error(e.getMessage());
+		}
 	}
 
 	public void creditorChange(ActionEvent e) {
@@ -102,11 +113,6 @@ public class PaymentModel implements Serializable {
 			data = file.getFileContent();
 		}
 		return data;
-	}
-
-	public void addMessage(String summary) {
-		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, null);
-		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 
 }

@@ -42,7 +42,7 @@ public abstract class GenericRepositoryImpl<T, PK extends Serializable> implemen
 	}
 
 	@Override
-	public T update(T t) {
+	public T saveOrUpdate(T t) {
 		return this.em.merge(t);
 	}
 

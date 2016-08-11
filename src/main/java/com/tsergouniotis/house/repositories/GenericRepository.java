@@ -12,7 +12,7 @@ public interface GenericRepository<T, PK extends Serializable> {
 
 	void saveAll(Collection<T> all);
 
-	T update(T t);
+	T saveOrUpdate(T t);
 
 	void delete(T t);
 

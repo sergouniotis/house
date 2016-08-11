@@ -9,10 +9,6 @@
 		<ui:composition template="./WEB-INF/template.xhtml">
 
 
-			<ui:define name="top">
-				<p:link outcome="index" value="payments" />
-			</ui:define>
-
 			<ui:define name="content">
 
 				<h:form id="master">
@@ -31,10 +27,18 @@
 						</p:column>
 
 						<p:column>
+
 							<p:commandButton value="View"
 								action="#{creditorModel.setSelectedCreditor(creditor)}" update=":detail"
 								oncomplete="PF('detail').show()" />
+
+							<p:commandButton title="Delete"
+								action="#{creditorModel.delete(creditor)}" icon="ui-icon-trash"
+								update=":master">
+							</p:commandButton>
+
 						</p:column>
+
 
 					</p:dataTable>
 
@@ -54,6 +58,14 @@
 							<p:outputLabel for="CreditorDescription" value="Description:" />
 							<p:inputText id="CreditorDescription"
 								value="#{creditorModel.selectedCreditor.description}" />
+
+							<p:outputLabel for="CreditorType" value="Creditory Type:" />
+							<p:selectOneRadio id="CreditorType"
+								value="#{creditorModel.selectedCreditor.type}" converter="#{creditorTypeConverter}"
+								layout="grid" columns="2">
+								<f:selectItems value="#{creditorModel.creditorTypes}"
+									converterId="#{creditorTypeConverter}" />
+							</p:selectOneRadio>
 
 						</h:panelGrid>
 

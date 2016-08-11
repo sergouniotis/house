@@ -12,7 +12,7 @@ services:
     - ${HOME}/projects/data/house/pgdata:/var/lib/postgresql/data
     networks:
     - house_net
-  joker:
+  house:
     container_name: house
     image: thanassis/house
     ports:

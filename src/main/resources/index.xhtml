@@ -8,11 +8,6 @@
 
 		<ui:composition template="./WEB-INF/template.xhtml">
 
-
-			<ui:define name="top">
-				<p:link id="_link" outcome="creditors" value="creditors" />
-			</ui:define>
-
 			<ui:define name="content">
 
 				<h:form id="master">
@@ -24,6 +19,10 @@
 						<f:facet name="header">
 							<h:outputText value="Payments" />
 						</f:facet>
+
+						<p:column headerText="Code" filterBy="#{payment.code}">
+							<h:outputText value="#{payment.code}" />
+						</p:column>
 
 						<p:column headerText="Creditor" sortBy="#{payment.creditor.name}"
 							filterBy="#{payment.creditor.name}">
@@ -57,10 +56,16 @@
 									value="#{paymentModel.getSelectedPaymentContent(payment)}" />
 							</p:commandButton>
 
+							<p:commandButton title="Delete" action="#{paymentModel.delete}"
+								icon="ui-icon-trash" update=":master">
+								<f:setPropertyActionListener value="#{payment}"
+									target="#{paymentModel.selectedPayment}" />
+							</p:commandButton>
+
 						</p:column>
 
 						<p:summaryRow>
-							<p:column colspan="1" style="text-align:right">
+							<p:column colspan="2" style="text-align:right">
 								<h:outputText value="Total:" />
 							</p:column>
 							<p:column colspan="4" style="text-align:left">
@@ -107,7 +112,7 @@
 				<p:dialog id="detail" widgetVar="detail">
 					<h:form>
 
-						<h:panelGrid columns="2">
+						<h:panelGrid columns="3">
 
 							<p:outputLabel for="creditor" value="Creditor:" />
 							<p:selectOneMenu id="creditor" converter="#{creditorConverter}"
@@ -116,14 +121,34 @@
 								<f:selectItems value="#{creditorModel.creditors}"
 									var="c" itemLabel="#{c.name}" itemValue="#{c}" />
 							</p:selectOneMenu>
+							<p:message for="creditor" display="text" />
 
 							<p:outputLabel for="amount" value="Amount:" />
 							<p:inputText id="amount"
 								value="#{paymentModel.selectedPayment.amount}" />
+							<p:message for="amount" display="text" />
 
 							<p:outputLabel for="description" value="Description:" />
 							<p:inputText id="description"
 								value="#{paymentModel.selectedPayment.description}" />
+							<p:message for="description" display="text" />
+
+							<p:outputLabel for="inline" value="Payment Date:" />
+							<p:calendar id="inline" pattern="yyyy-mm-dd"
+								value="#{paymentModel.selectedPayment.paymentDay}" showOn="button">
+								<f:converter converterId="localDateTimeConverter" />
+							</p:calendar>
+							<p:message for="inline" display="text" />
+
+							<p:outputLabel for="code" value="Payment Code:" />
+							<p:inputText id="code"
+								value="#{paymentModel.selectedPayment.code}" />
+							<p:message for="code" display="text" />
+
+							<p:outputLabel for="extraFlag" value="Extradaki:" />
+							<p:selectBooleanCheckbox id="extraFlag"
+								value="#{paymentModel.selectedPayment.extra}" />
+							<p:message for="extraFlag" display="text" />
 
 							<p:outputLabel for="file" value="File: " />
 							<p:panel id="file">
@@ -141,12 +166,7 @@
 									</p>
 								</p:outputPanel>
 							</p:panel>
-
-							<p:outputLabel for="inline" value="Payment Date:" />
-							<p:calendar id="inline" pattern="yyyy-mm-dd"
-								value="#{paymentModel.selectedPayment.paymentDay}" showOn="button">
-								<f:converter converterId="localDateTimeConverter" />
-							</p:calendar>
+							<p:message for="file" display="text" />
 
 						</h:panelGrid>
 
