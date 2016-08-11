@@ -14,17 +14,17 @@
 					<p:dataTable id="paymentsDataTable" var="payment"
 						value="#{paymentModel.payments}" rows="20" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15" editable="true" sortBy="#{payment.creditor.name}">
+						rowsPerPageTemplate="5,10,15" editable="true" sortBy="#{payment.creditor}">
 
 						<f:facet name="header">
 							<h:outputText value="Payments" />
 						</f:facet>
 
-						<p:column headerText="Code" filterBy="#{payment.code}">
+						<p:column headerText="Code" filterBy="#{payment.code}" sortBy="#{payment.code}">
 							<h:outputText value="#{payment.code}" />
 						</p:column>
 
-						<p:column headerText="Creditor" sortBy="#{payment.creditor.name}"
+						<p:column headerText="Creditor" sortBy="#{payment.creditor}"
 							filterBy="#{payment.creditor.name}">
 							<h:outputText value="#{payment.creditor.name}" />
 						</p:column>
@@ -173,7 +173,8 @@
 
 						<p:commandButton value="Save" action="#{paymentModel.save}"
 							update=":master" oncomplete="PF('detail').hide()" />
-						<p:button value="Close" onclick="PF('detail').hide(); return false" />
+						<p:button action="#{paymentModel.setSelectedPayment(null)}"
+							value="Close" onclick="PF('detail').hide();" />
 					</h:form>
 				</p:dialog>
 

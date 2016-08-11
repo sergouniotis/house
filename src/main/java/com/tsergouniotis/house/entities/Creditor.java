@@ -1,6 +1,7 @@
 package com.tsergouniotis.house.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "creditors")
 @NamedQueries({ @NamedQuery(name = "Creditor.findByName", query = "SELECT c FROM Creditor c where c.name=:name") })
-public class Creditor implements Serializable {
+public class Creditor implements Serializable, Comparable<Creditor> {
 
 	/**
 	 * 
@@ -107,6 +108,15 @@ public class Creditor implements Serializable {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Creditor o) {
+		if (Objects.isNull(o)) {
+			return 1;
+		}
+
+		return getName().compareTo(o.getName());
 	}
 
 }
