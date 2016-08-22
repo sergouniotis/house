@@ -11,9 +11,14 @@
 
 			<ui:define name="content">
 
-				<p:chart type="line" model="#{graphModel.lineModel1}" style="height:300px;" rendered="#{not empty graphModel.lineModel1}"/>
+				<p:chart type="line" model="#{graphModel.totalChart}" style="height:300px;"
+					rendered="#{not empty graphModel.totalChart}" />
 
-				<p:chart type="line" model="#{graphModel.dateModel}" style="height:400px;" rendered="#{not empty graphModel.dateModel}"/>
+				<p:chart type="line" model="#{graphModel.byTypeChart}"
+					style="height:400px;" rendered="#{not empty graphModel.byTypeChart}" />
+
+				<p:chart type="bar" model="#{graphModel.byCreditorChart}"
+					style="height:400px;" rendered="#{not empty graphModel.byCreditorChart}" />
 
 
 			</ui:define>

@@ -32,10 +32,12 @@
 								action="#{creditorModel.setSelectedCreditor(creditor)}" update=":detail"
 								oncomplete="PF('detail').show()" />
 
+
 							<p:commandButton title="Delete"
 								action="#{creditorModel.delete(creditor)}" icon="ui-icon-trash"
 								update=":master">
 							</p:commandButton>
+
 
 						</p:column>
 
@@ -43,7 +45,7 @@
 					</p:dataTable>
 
 					<p:commandButton value="Add" update=":detail"
-						oncomplete="PF('detail').show()" />
+						action="#{creditorModel.setSelectedCreditor(null)}" oncomplete="PF('detail').show()" />
 
 				</h:form>
 

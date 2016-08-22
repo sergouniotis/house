@@ -20,7 +20,8 @@
 							<h:outputText value="Payments" />
 						</f:facet>
 
-						<p:column headerText="Code" filterBy="#{payment.code}" sortBy="#{payment.code}">
+						<p:column headerText="Code" filterBy="#{payment.code}"
+							sortBy="#{payment.code}">
 							<h:outputText value="#{payment.code}" />
 						</p:column>
 
@@ -84,7 +85,7 @@
 					</p:dataTable>
 
 					<p:commandButton value="Add" update=":detail"
-						oncomplete="PF('detail').show()" />
+						action="#{paymentModel.setSelectedPayment(null)}" oncomplete="PF('detail').show()" />
 
 					<h:commandLink>
 						<p:graphicImage name="images/excel.png" />
