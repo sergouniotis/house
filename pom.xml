@@ -17,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.postgresql>9.4.1208</version.postgresql>
 		<!-- <version.postgresql>9.4-1200-jdbc41-SNAPSHOT</version.postgresql> -->
-		<docker.image.prefix>thanassis</docker.image.prefix>
+		<docker.image.prefix>tsergouniotis</docker.image.prefix>
 	</properties>
 
 	<dependencyManagement>
