@@ -10,6 +10,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.tsergouniotis.house.entities.Creditor;
 import com.tsergouniotis.house.entities.CreditorType;
 import com.tsergouniotis.house.entities.Payment;
@@ -19,6 +22,8 @@ import com.tsergouniotis.house.repositories.PaymentRepository;
 @ViewScoped
 @Named("creditorModel")
 public class CreditorModel implements Serializable {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreditorModel.class);
 
 	/**
 	 * 
@@ -58,6 +63,7 @@ public class CreditorModel implements Serializable {
 
 	public void save() {
 		creditorRepository.saveOrUpdate(selectedCreditor);
+		LOGGER.info("Creditor " + selectedCreditor.getName() + "created");
 		this.selectedCreditor = null;
 	}
 
@@ -69,6 +75,8 @@ public class CreditorModel implements Serializable {
 				throw new Exception("Creditor has payments assigned  and  thus cannot be deleted.");
 			}
 			creditorRepository.delete(creditor);
+
+			LOGGER.info("Creditor " + selectedCreditor.getName() + "deleted");
 		} catch (Exception e) {
 			FacesUtils.error(e.getMessage());
 		}

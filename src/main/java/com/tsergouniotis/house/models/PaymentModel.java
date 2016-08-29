@@ -18,6 +18,8 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tsergouniotis.house.entities.Creditor;
 import com.tsergouniotis.house.entities.PFile;
@@ -33,6 +35,8 @@ public class PaymentModel implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5209787022951181350L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PaymentModel.class);
 
 	@Inject
 	private PaymentRepository paymentRepository;
@@ -68,12 +72,14 @@ public class PaymentModel implements Serializable {
 
 	public void save() {
 		paymentRepository.saveOrUpdate(selectedPayment);
+		LOGGER.info("Payment " + selectedPayment.getCode() + " saved.");
 		selectedPayment = null;
 	}
 
 	public void delete() {
 		try {
 			paymentRepository.delete(this.selectedPayment);
+			LOGGER.info("Payment " + selectedPayment.getCode() + " deleted.");
 		} catch (Exception e) {
 			FacesUtils.error(e.getMessage());
 		}
