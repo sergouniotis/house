@@ -71,9 +71,14 @@ public class PaymentModel implements Serializable {
 	}
 
 	public void save() {
-		paymentRepository.saveOrUpdate(selectedPayment);
-		LOGGER.info("Payment " + selectedPayment.getCode() + " saved.");
-		selectedPayment = null;
+		try {
+			paymentRepository.saveOrUpdate(selectedPayment);
+			LOGGER.info("Payment " + selectedPayment.getCode() + " saved.");
+		} catch (Exception e) {
+			FacesUtils.error(e.getMessage());
+		} finally {
+			selectedPayment = null;
+		}
 	}
 
 	public void delete() {

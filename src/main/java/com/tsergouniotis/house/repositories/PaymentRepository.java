@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -33,6 +34,16 @@ public class PaymentRepository extends GenericRepositoryImpl<Payment, Long> {
 		TypedQuery<Payment> q = em.createNamedQuery("Payment.findPerCreditor", Payment.class);
 		q.setParameter("creditor", creditor);
 		return q.getResultList();
+	}
+
+	public Long findByPaymentCode(String code) {
+		try {
+			TypedQuery<Long> q = em.createNamedQuery("Payment.findByPaymentCode", Long.class);
+			q.setParameter("code", code);
+			return q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 }

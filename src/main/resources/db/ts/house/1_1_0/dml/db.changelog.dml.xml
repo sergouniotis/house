@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+	<changeSet id="insert_users_table" author="t.sergouniotis">
+
+		<insert tableName="users">
+			<column name="database_id" valueSequenceNext="users_pk_seq" />
+			<column name="username" value="eleni" />
+			<column name="password" value="eleni" />
+		</insert>
+
+		<insert tableName="roles">
+			<column name="database_id" valueSequenceNext="role_pk_seq" />
+			<column name="role" value="ADMIN" />
+			<column name="description" value="Administrator role" />
+		</insert>
+
+		<insert tableName="users_roles">
+			<column name="user_sid"
+				valueComputed="(select database_id from users where username='eleni')" />
+			<column name="role_sid"
+				valueComputed="(select database_id from roles where role='ADMIN')" />
+		</insert>
+
+	</changeSet>
+
+</databaseChangeLog>

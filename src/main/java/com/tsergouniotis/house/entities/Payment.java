@@ -17,11 +17,14 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.tsergouniotis.house.validation.constraints.UniquePaymentCode;
+
 @Entity
 @Table(name = "payments")
 @NamedQueries({ @NamedQuery(name = "Payment.findSum", query = "SELECT SUM(p.amount) FROM Payment p"),
 		@NamedQuery(name = "Payment.findPerCreditor", query = "SELECT p FROM Payment p where p.creditor=:creditor"),
-		@NamedQuery(name = "Payment.findSumPerCreditor", query = "SELECT SUM(p.amount) FROM Payment p where p.creditor=:creditor") })
+		@NamedQuery(name = "Payment.findSumPerCreditor", query = "SELECT SUM(p.amount) FROM Payment p where p.creditor=:creditor"),
+		@NamedQuery(name = "Payment.findByPaymentCode", query = "SELECT p.id FROM Payment p where p.code=:code") })
 public class Payment implements Serializable {
 
 	/**
@@ -51,6 +54,7 @@ public class Payment implements Serializable {
 	@Column(name = "is_extra")
 	private boolean extra;
 
+	@UniquePaymentCode
 	@Column(name = "payment_code", unique = true)
 	private String code;
 

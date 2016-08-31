@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+	<changeSet id="create_users_table" author="t.sergouniotis">
+
+		<createTable tableName="users">
+
+			<column name="database_id" type="BIGINT" />
+
+			<column name="username" type="TEXT">
+				<constraints unique="true" nullable="false" />
+			</column>
+
+			<column name="password" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="creditor_type" type="TEXT" />
+
+		</createTable>
+
+		<addPrimaryKey tableName="users" columnNames="database_id"
+			constraintName="users_pk" />
+
+		<createSequence sequenceName="users_pk_seq"
+			incrementBy="1" startValue="1" />
+
+	</changeSet>
+
+	<changeSet id="create_roles" author="tsergouniotis">
+		<createTable tableName="roles">
+
+			<column name="database_id" type="BIGINT" />
+
+			<column name="role" type="TEXT">
+				<constraints unique="true" nullable="false" />
+			</column>
+
+			<column name="description" type="TEXT" />
+
+		</createTable>
+
+		<addPrimaryKey tableName="roles" columnNames="database_id"
+			constraintName="roles_pk" />
+
+		<createSequence sequenceName="role_pk_seq" incrementBy="1"
+			startValue="1" />
+	</changeSet>
+
+
+	<changeSet id="create_users_roles" author="tsergouniotis">
+		<createTable tableName="users_roles">
+
+			<column name="user_sid" type="BIGINT" />
+			<column name="role_sid" type="BIGINT" />
+
+		</createTable>
+
+
+		<addPrimaryKey columnNames="user_sid, role_sid"
+			constraintName="users_roles_pk" tableName="users_roles" />
+
+		<addForeignKeyConstraint constraintName="urufkconstraint"
+			referencedTableName="users" baseColumnNames="user_sid" baseTableName="users_roles"
+			referencedColumnNames="database_id" />
+
+		<addForeignKeyConstraint constraintName="urrfkconstraint"
+			referencedTableName="roles" baseColumnNames="role_sid" baseTableName="users_roles"
+			referencedColumnNames="database_id" />
+
+	</changeSet>
+
+
+	<changeSet id="drop_creditor_type_from_users" author="tsergouniotis">
+		<dropColumn tableName="users" columnName="creditor_type" />
+	</changeSet>
+
+</databaseChangeLog>

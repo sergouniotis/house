@@ -12,9 +12,9 @@
 
 				<h:form id="master">
 					<p:dataTable id="paymentsDataTable" var="payment"
-						value="#{paymentModel.payments}" rows="20" paginator="true"
+						value="#{paymentModel.payments}" rows="10" paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15" editable="true" sortBy="#{payment.creditor}">
+						rowsPerPageTemplate="5,10,15,20" editable="true" sortBy="#{payment.creditor}">
 
 						<f:facet name="header">
 							<h:outputText value="Payments" />
@@ -31,7 +31,11 @@
 						</p:column>
 
 						<p:column headerText="Amount" sortBy="#{payment.amount}">
-							<h:outputText value="#{payment.amount}" />
+							<h:outputText value="#{payment.amount}">
+								<f:convertNumber type="currency"
+									maxFractionDigits="2" minFractionDigits="2" currencySymbol="€"
+									locale="de_DE" />
+							</h:outputText>
 						</p:column>
 
 						<p:column headerText="Description" filterBy="#{payment.description}">
@@ -50,7 +54,7 @@
 								action="#{paymentModel.setSelectedPayment(payment)}" update=":detail"
 								oncomplete="PF('detail').show()" />
 
-							<p:commandButton value="Download" ajax="false"
+							<p:commandButton title="Download" ajax="false"
 								rendered="#{not empty payment.file}" onclick="PrimeFaces.monitorDownload(start, stop);"
 								icon="ui-icon-arrowthick-1-s">
 								<p:fileDownload
@@ -73,13 +77,17 @@
 								<h:outputText
 									value="#{paymentModel.getTotalPerCreditor(payment.creditor)}">
 									<f:convertNumber type="currency"
-										currencySymbol="€" />
+										maxFractionDigits="2" minFractionDigits="2" currencySymbol="€"
+										locale="de_DE" />
 								</h:outputText>
 							</p:column>
 						</p:summaryRow>
 
 						<f:facet name="footer">
-							<h:outputText value="Current Cost in €: #{paymentModel.total}" />
+							<h:outputText value="#{paymentModel.total}">
+								<f:convertNumber type="currency" currencySymbol="€"
+									maxFractionDigits="2" minFractionDigits="2" locale="de_DE" />
+							</h:outputText>
 						</f:facet>
 
 					</p:dataTable>
@@ -143,7 +151,7 @@
 
 							<p:outputLabel for="code" value="Payment Code:" />
 							<p:inputText id="code"
-								value="#{paymentModel.selectedPayment.code}" />
+								value="#{paymentModel.selectedPayment.code}" required="true" />
 							<p:message for="code" display="text" />
 
 							<p:outputLabel for="extraFlag" value="Extradaki:" />

@@ -4,12 +4,7 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-
-	<!-- <property name="clob.type" value="clob" dbms="oracle,h2" /> -->
-	<!-- <property name="clob.type" value="longtext" dbms="mysql" /> -->
-
-
-	<include file="db/ts/house/1_0_0/db.changelog-1.0.0.xml" />
-	<include file="db/ts/house/1_1_0/db.changelog-1.1.0.xml" />
+	<include file="db/ts/house/1_1_0/ddl/db.changelog.ddl.xml" />
+	<include file="db/ts/house/1_1_0/dml/db.changelog.dml.xml" />
 
 </databaseChangeLog>
