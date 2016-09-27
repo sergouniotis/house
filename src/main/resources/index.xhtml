@@ -12,8 +12,9 @@
 
 				<h:form id="master">
 					<p:dataTable id="paymentsDataTable" var="payment"
-						value="#{paymentModel.payments}" rows="10" paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						selection="#{paymentModel.selectedPayment}" value="#{paymentModel}"
+						rows="10" paginator="true" lazy="true"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 						rowsPerPageTemplate="5,10,15,20" editable="true" sortBy="#{payment.creditor}">
 
 						<f:facet name="header">

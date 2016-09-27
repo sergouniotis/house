@@ -16,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.tsergouniotis.house.validation.constraints.UniquePaymentCode;
 
@@ -54,6 +56,8 @@ public class Payment implements Serializable {
 	@Column(name = "is_extra")
 	private boolean extra;
 
+	@NotNull
+	@Size(min = 1)
 	@UniquePaymentCode
 	@Column(name = "payment_code", unique = true)
 	private String code;

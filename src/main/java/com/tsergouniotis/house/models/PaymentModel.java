@@ -2,9 +2,10 @@ package com.tsergouniotis.house.models;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.faces.application.FacesMessage;
@@ -16,6 +17,9 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
@@ -25,11 +29,12 @@ import com.tsergouniotis.house.entities.Creditor;
 import com.tsergouniotis.house.entities.PFile;
 import com.tsergouniotis.house.entities.Payment;
 import com.tsergouniotis.house.repositories.PaymentRepository;
+import com.tsergouniotis.house.utils.CollectionUtils;
 
 @ViewScoped
 @Named("paymentModel")
 // @ManagedBean(name = "paymentModel")
-public class PaymentModel implements Serializable {
+public class PaymentModel extends LazyDataModel<Payment> {
 
 	/**
 	 * 
@@ -75,7 +80,8 @@ public class PaymentModel implements Serializable {
 			paymentRepository.saveOrUpdate(selectedPayment);
 			LOGGER.info("Payment " + selectedPayment.getCode() + " saved.");
 		} catch (Exception e) {
-			FacesUtils.error(e.getMessage());
+			String message = Objects.isNull(e.getCause()) ? e.getMessage() : e.getCause().getMessage();
+			FacesUtils.error(message);
 		} finally {
 			selectedPayment = null;
 		}
@@ -86,7 +92,8 @@ public class PaymentModel implements Serializable {
 			paymentRepository.delete(this.selectedPayment);
 			LOGGER.info("Payment " + selectedPayment.getCode() + " deleted.");
 		} catch (Exception e) {
-			FacesUtils.error(e.getMessage());
+			String message = Objects.isNull(e.getCause()) ? e.getMessage() : e.getCause().getMessage();
+			FacesUtils.error(message);
 		}
 	}
 
@@ -124,6 +131,60 @@ public class PaymentModel implements Serializable {
 			data = file.getFileContent();
 		}
 		return data;
+	}
+
+	@Override
+	public List<Payment> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
+
+		Map<String, Boolean> sortMap = toSortMap(multiSortMeta);
+
+		List<Payment> results = paymentRepository.find(first, pageSize, sortMap, filters);
+
+		setRowCount(paymentRepository.count(filters).intValue());
+
+		return results;
+	}
+
+	@Override
+	public List<Payment> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+
+		Map<String, Boolean> sortMap = toSortMap(sortField, sortOrder);
+
+		List<Payment> results = paymentRepository.find(first, pageSize, sortMap, filters);
+
+		setRowCount(paymentRepository.count(filters).intValue());
+
+		return results;
+	}
+
+	@Override
+	public Object getRowKey(Payment object) {
+		return object.getId();
+	}
+
+	private Map<String, Boolean> toSortMap(List<SortMeta> multiSortMeta) {
+		Map<String, Boolean> sortMap = new HashMap<>();
+
+		if (CollectionUtils.isNotEmpty(multiSortMeta)) {
+			for (SortMeta sortMeta : multiSortMeta) {
+				String property = sortMeta.getSortField();
+
+				Boolean value = sortMap.get(property);
+				if (null != value) {
+					sortMap.put(property, value);
+				}
+			}
+		}
+		return sortMap;
+	}
+
+	private Map<String, Boolean> toSortMap(String sortField, SortOrder sortOrder) {
+		Map<String, Boolean> sortMap = new HashMap<>();
+		if (null != sortOrder) {
+			boolean ascending = SortOrder.ASCENDING.equals(sortOrder);
+			sortMap.put(sortField, ascending);
+		}
+		return sortMap;
 	}
 
 }

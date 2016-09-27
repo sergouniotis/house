@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.wildfly.swarm.bean.validation.BeanValidationFraction;
 import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.config.security.Flag;
 import org.wildfly.swarm.config.security.SecurityDomain;
@@ -58,8 +57,7 @@ public class Main {
 
 		LoggingFraction loggingFraction = new LoggingFraction().defaultFormatter().consoleHandler(Level.INFO, "PATTERN")
 				.fileHandler("JBOSS", "jboss.log", Level.FINE, "%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n")
-				.fileHandler("HOUSE", "house.log", Level.FINE, "%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n")
-				.rootLogger(Level.INFO, LoggingFraction.CONSOLE)
+				.fileHandler("HOUSE", "house.log", Level.FINE, "%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n").rootLogger(Level.INFO, LoggingFraction.CONSOLE)
 				.logger("org.jboss", l -> l.level(Level.FINE).handler("JBOSS").useParentHandlers(false))
 				.logger("com.tsergouniotis", l -> l.level(Level.FINE).handler("HOUSE").useParentHandlers(false));
 
@@ -68,19 +66,28 @@ public class Main {
 		// container.fraction(new BeanValidationFraction());
 		// container.fraction(TransactionsFraction.createDefaultFraction());
 
-		container.fraction(SecurityFraction.defaultSecurityFraction()
-				.securityDomain(new SecurityDomain(SECURITY_DOMAIN)
-						.classicAuthentication(new ClassicAuthentication<>().loginModule(new LoginModule("Database")
-								.code("Database").flag(Flag.REQUIRED).moduleOptions(new HashMap<Object, Object>() {
-									{
-										put("dsJndiName", DATASOURCE_NAME);
-										put("principalsQuery", PRINCIPALS_QUERY);
-										put("rolesQuery", ROLES_QUERY);
-									}
-								})))));
+		container.fraction(SecurityFraction.defaultSecurityFraction().securityDomain(new SecurityDomain(SECURITY_DOMAIN).classicAuthentication(
+				new ClassicAuthentication<>().loginModule(new LoginModule("Database").code("Database").flag(Flag.REQUIRED).moduleOptions(new HashMap<Object, Object>() {
+					{
+						put("dsJndiName", DATASOURCE_NAME);
+						put("principalsQuery", PRINCIPALS_QUERY);
+						put("rolesQuery", ROLES_QUERY);
+					}
+				})))));
+
+		// infinispan fraction
+/*		CacheContainer webCache = new CacheContainer("web").defaultCache("dist").jgroupsTransport(new JGroupsTransport().lockTimeout(60000L)).distributedCache("dist",
+				distCache -> distCache.mode(Mode.ASYNC).l1Lifespan(0L).owners(2).lockingComponent(new LockingComponent().isolation(Isolation.REPEATABLE_READ))
+						.transactionComponent(new TransactionComponent().mode(org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent.Mode.BATCH))
+						.fileStore(new FileStore()));*/
+
+		// Create a new fraction, and add the cache container.
+		// Using the default ctor to create a new InfinispanFraction
+		// will provide no default caches.
+		
+//		container.fraction(InfinispanFraction.createDefaultFraction().cacheContainer(webCache));
 
 		// WarDeployment deployment = new DefaultWarDeployment(container);
-
 		WARArchive deployment = ShrinkWrap.create(WARArchive.class);
 
 		deployment.addPackages(true, "com.tsergouniotis");
@@ -89,28 +96,25 @@ public class Main {
 		deployment.addDependency("org.primefaces:primefaces");
 		deployment.addDependency("org.apache.poi:poi");
 
-		deployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()),
-				"classes/META-INF/persistence.xml");
+		deployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
 		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/web.xml", Main.class.getClassLoader()), "web.xml");
-		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/template.xhtml", Main.class.getClassLoader()),
-				"template.xhtml");
+		deployment.addAsWebInfResource(new ClassLoaderAsset("WEB-INF/template.xhtml", Main.class.getClassLoader()), "template.xhtml");
 
 		deployment.addAsWebResource(new ClassLoaderAsset("index.html", Main.class.getClassLoader()), "index.html");
 		deployment.addAsWebResource(new ClassLoaderAsset("index.xhtml", Main.class.getClassLoader()), "index.xhtml");
-		deployment.addAsWebResource(new ClassLoaderAsset("creditors.xhtml", Main.class.getClassLoader()),
-				"creditors.xhtml");
+		deployment.addAsWebResource(new ClassLoaderAsset("creditors.xhtml", Main.class.getClassLoader()), "creditors.xhtml");
 		deployment.addAsWebResource(new ClassLoaderAsset("graphs.xhtml", Main.class.getClassLoader()), "graphs.xhtml");
 
-		deployment.addAsManifestResource(new ClassLoaderAsset("images/ajaxloadingbar.gif", Main.class.getClassLoader()),
-				"resources/images/ajaxloadingbar.gif");
-		deployment.addAsManifestResource(new ClassLoaderAsset("images/excel.png", Main.class.getClassLoader()),
-				"resources/images/excel.png");
+		deployment.addAsManifestResource(new ClassLoaderAsset("images/ajaxloadingbar.gif", Main.class.getClassLoader()), "resources/images/ajaxloadingbar.gif");
+		deployment.addAsManifestResource(new ClassLoaderAsset("images/excel.png", Main.class.getClassLoader()), "resources/images/excel.png");
 
-/*		deployment.addAsManifestResource(new ClassLoaderAsset("META-INF/validation.xml", Main.class.getClassLoader()),
-				"validation.xml");*/
+		/*
+		 * deployment.addAsManifestResource(new
+		 * ClassLoaderAsset("META-INF/validation.xml",
+		 * Main.class.getClassLoader()), "validation.xml");
+		 */
 
-		deployment.addAsResource(new ClassLoaderAsset("ValidationMessages.properties", Main.class.getClassLoader()),
-				"ValidationMessages.properties");
+		deployment.addAsResource(new ClassLoaderAsset("ValidationMessages.properties", Main.class.getClassLoader()), "ValidationMessages.properties");
 
 		WebXmlAsset webXmlAsset = deployment.findWebXmlAsset();
 		webXmlAsset.setLoginConfig("BASIC", "my-realm");
@@ -126,8 +130,7 @@ public class Main {
 	private static void migrate() throws Exception {
 		try (Connection c = DBUtils.getConnection()) {
 			Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
-			Liquibase liquibase = new Liquibase("db/ts/house/db.changelog-master.xml",
-					new ClassLoaderResourceAccessor(), database);
+			Liquibase liquibase = new Liquibase("db/ts/house/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
 			liquibase.update(new Contexts());
 
 		} catch (Exception e) {

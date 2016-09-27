@@ -5,5 +5,7 @@
 	<persistence-unit name="MyPU" transaction-type="JTA">
 		<jta-data-source>jboss/datasources/houseds</jta-data-source>
 		<validation-mode>NONE</validation-mode>
+<!-- 		<shared-cache-mode>ALL</shared-cache-mode> -->
 	</persistence-unit>
+
 </persistence>
