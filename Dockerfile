@@ -1,8 +1,15 @@
-FROM fabric8/java-jboss-openjdk8-jdk:1.0.13
+FROM java:8
 
-ENV JAVA_APP_JAR house-swarm.jar
-ENV AB_OFF true
+VOLUME /tmp
+
+ADD target/house-swarm.jar app.jar
+
+ADD dockerfiles/run.sh /run.sh
+
+ADD src/main/resources/images /images
+
+RUN bash -c 'touch /app.jar'
 
 EXPOSE 8080
 
-ADD target/house-swarm.jar /app/
+CMD ["bash","./run.sh"]
