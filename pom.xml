@@ -15,7 +15,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.postgresql>9.4.1208</version.postgresql>
+		<version.postgresql>42.2.25</version.postgresql>
 		<!-- <version.postgresql>9.4-1200-jdbc41-SNAPSHOT</version.postgresql> -->
 		<docker.image.prefix>tsergouniotis</docker.image.prefix>
 	</properties>
